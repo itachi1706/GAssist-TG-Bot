@@ -70,7 +70,7 @@ bot.onText(/\/okgoogle (.+)/, (msg, match) => {
             // do stuff with the text that the assistant said back
             if (config.debug) console.log("Assistant Response: " + text);
             console.log('[Google Assistant] Sending answer to ' + msg.chat.id);
-            sendTextMessage(msg.chat.id, text);
+            sendTextMessage(msg.chat.id, text, {reply_to_message_id: msg.message_id});
             })
             .on('ended', (error, continueConversation) => {
             // once the conversation is ended, see if we need to follow up
@@ -81,7 +81,8 @@ bot.onText(/\/okgoogle (.+)/, (msg, match) => {
             //console.log(voice);
             var outBuf = Buffer.concat(voice);
             console.log(outBuf);
-            fs.writeFileSync("out.mp3", outBuf);
+            //fs.writeFileSync("out.mp3", outBuf);
+            sendMP3Buffer(msg.chat.id, outBuf, {reply_to_message_id: msg.message_id});
             })
             .on('error', error => console.error(error));
         });
@@ -106,6 +107,16 @@ bot.on('polling_error', (error) => {
 
 function sendTextMessage(chatId, msg, options = {}) {
     let promise = bot.sendMessage(chatId, msg, options);
+    promise.then((msg) => {
+        if (config.debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
+    });
+    return promise;
+}
+
+function sendMP3Buffer(chatId, audioBuffer, options = {}) {
+    let promise = bot.sendAudio(chatId, audioBuffer, options, {
+        filename: 'GassistantAudioOutput', contentType: 'audio/mpeg'
+    });
     promise.then((msg) => {
         if (config.debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
     });
