@@ -110,5 +110,5 @@ const promptUser = () => {
     });
 };
 
-//promptUser();
+promptUser();
 module.exports = GoogleAssistant;
