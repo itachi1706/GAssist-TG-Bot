@@ -59,3 +59,8 @@ typings/
 
 # Configuration
 config.js
+
+# Secret stuff
+credentials.json
+tgbottoken.txt
+restart.sh
