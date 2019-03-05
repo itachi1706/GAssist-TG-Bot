@@ -38,18 +38,7 @@ const gassistantConfig = {
 
 const assistant = new GoogleAssistant(gassistantConfig.auth);
 
-assistant.on('ready', () => console.log('Google Assistant Ready!'));
-
-console.log('Authenticating with Telegram Servers...');
-// replace the value below with the Telegram token you receive from @BotFather
-const token = config.telegramBotToken;
-
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {polling: true});
-
-// Matches "/okgoogle [whatever]"
-console.log('Registering OK Google command');
-bot.onText(/\/okgoogle (.+)/, (msg, match) => {
+const sendGAssist = (msg, match) => {
     console.log('[Google Assistant] Received in chat ' + msg.chat.id + ': ' + match[1]);
     if (config.debug) console.log('[DEBUG] Query Google');
 
@@ -69,8 +58,13 @@ bot.onText(/\/okgoogle (.+)/, (msg, match) => {
             .on('response', (text) => {
             // do stuff with the text that the assistant said back
             if (config.debug) console.log("Assistant Response: " + text);
-            console.log('[Google Assistant] Sending answer to ' + msg.chat.id);
-            sendTextMessage(msg.chat.id, text, {reply_to_message_id: msg.message_id});
+            if (text == "") {
+                console.log('[Google Assistant] No text response found');
+                sendTextMessage(msg.chat.id, "Please listen to audio output", {reply_to_message_id: msg.message_id});
+            } else {
+                console.log('[Google Assistant] Sending answer to ' + msg.chat.id);
+                sendTextMessage(msg.chat.id, text, {reply_to_message_id: msg.message_id});
+            }
             })
             .on('ended', (error, continueConversation) => {
             // once the conversation is ended, see if we need to follow up
@@ -86,7 +80,24 @@ bot.onText(/\/okgoogle (.+)/, (msg, match) => {
             })
             .on('error', error => console.error(error));
         });
-});
+};
+
+assistant.on('ready', () => console.log('Google Assistant Ready!'));
+
+console.log('Authenticating with Telegram Servers...');
+// replace the value below with the Telegram token you receive from @BotFather
+const token = config.telegramBotToken;
+
+// Create a bot that uses 'polling' to fetch new updates
+const bot = new TelegramBot(token, {polling: true});
+
+// Matches "/okgoogle [whatever]"
+console.log('Registering OK Google command');
+bot.onText(/\/okgoogle (.+)/, sendGAssist);
+
+// Matches "/okgoogle@ccn_gassistant_bot [whatever]"
+console.log('Registering OK Google command');
+bot.onText(/\/okgoogle@ccn_gassistant_bot (.+)/, sendGAssist);
 
 // Matches "/about"
 console.log('Registering About Bot command');
