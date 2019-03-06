@@ -52,31 +52,31 @@ const sendGAssist = (msg, match) => {
         
         conversation
             .on('audio-data', (data) => {
-            if (data instanceof Buffer)
-                voice.push(data);
+                if (data instanceof Buffer)
+                    voice.push(data);
             })
             .on('response', (text) => {
-            // do stuff with the text that the assistant said back
-            if (config.debug) console.log("Assistant Response: " + text);
-            if (text == "") {
-                console.log('[Google Assistant] No text response found');
-                sendTextMessage(msg.chat.id, "Please listen to audio output", {reply_to_message_id: msg.message_id});
-            } else {
-                console.log('[Google Assistant] Sending answer to ' + msg.chat.id);
-                sendTextMessage(msg.chat.id, text, {reply_to_message_id: msg.message_id});
-            }
+                // do stuff with the text that the assistant said back
+                if (config.debug) console.log("Assistant Response: " + text);
+                if (text == "") {
+                    console.log('[Google Assistant] No text response found');
+                    sendTextMessage(msg.chat.id, "Please listen to audio output", {reply_to_message_id: msg.message_id});
+                } else {
+                    console.log('[Google Assistant] Sending answer to ' + msg.chat.id);
+                    sendTextMessage(msg.chat.id, text, {reply_to_message_id: msg.message_id});
+                }
             })
             .on('ended', (error, continueConversation) => {
-            // once the conversation is ended, see if we need to follow up
-            if (error) console.log('Conversation Ended Error:', error);
-            else if (continueConversation) assistant.start();
-            else console.log('Conversation Complete');
-        
-            //console.log(voice);
-            var outBuf = Buffer.concat(voice);
-            console.log(outBuf);
-            //fs.writeFileSync("out.mp3", outBuf);
-            sendMP3Buffer(msg.chat.id, outBuf, {reply_to_message_id: msg.message_id});
+                // once the conversation is ended, see if we need to follow up
+                if (error) console.log('Conversation Ended Error:', error);
+                else if (continueConversation) assistant.start();
+                else console.log('Conversation Complete');
+            
+                //console.log(voice);
+                var outBuf = Buffer.concat(voice);
+                console.log(outBuf);
+                //fs.writeFileSync("out.mp3", outBuf);
+                sendMP3Buffer(msg.chat.id, outBuf, {reply_to_message_id: msg.message_id});
             })
             .on('error', error => console.error(error));
         });
@@ -92,17 +92,41 @@ const token = config.telegramBotToken;
 const bot = new TelegramBot(token, {polling: true});
 
 // Matches "/okgoogle [whatever]"
-console.log('Registering OK Google command');
-bot.onText(/\/okgoogle (.+)/, sendGAssist);
-
 // Matches "/okgoogle@ccn_gassistant_bot [whatever]"
-console.log('Registering OK Google command');
-bot.onText(/\/okgoogle@ccn_gassistant_bot (.+)/, sendGAssist);
+console.log('Registering OK Google case-insensitive command');
+bot.onText(/\/okgoogle(?:@ccn_gassistant_bot)? (.+)/ig, sendGAssist);
 
 // Matches "/about"
 console.log('Registering About Bot command');
 bot.onText(/\/about\b/, (msg, match) => {
     sendTextMessage(msg.chat.id, "This bot lets you invoke the Google Assistant API to do stuff Google Assistanty");
+});
+
+// Matches "/debuginfo"
+console.log('Registering Debug Info Bot command');
+bot.onText(/\/debuginfo\b/, (msg, match) => {
+    // Data
+    var userinfo = "Unknown Username";
+    if (msg.from.username != null) userinfo = msg.from.username;
+    if (msg.from.first_name != null) {
+        userinfo += " (" + msg.from.first_name;
+        if (typeof msg.from.last_name !== 'undefined') userinfo += " " + msg.from.last_name;
+        userinfo += ")";
+    }
+    var groupinfo;
+    if (msg.chat.type == "private") {
+        groupinfo = userinfo;
+    } else {
+        groupinfo = msg.chat.title;
+    }
+
+    var debugText = '';
+    debugText += "Command Caller ID: " + msg.from.id + "\n";
+    debugText += "Command Caller: " + userinfo + "\n";
+    debugText += "Chat ID: " + msg.chat.id + "\n";
+    debugText += "Chat Type: " + msg.chat.type + "\n";
+    debugText += "Chat Info: " + groupinfo;
+    sendTextMessage(msg.chat.id, "***Debug Information***\n" + debugText, {reply_to_message_id: msg.message_id, parse_mode: "Markdown"});
 });
 
 console.log('Registering any messages receiver');
@@ -135,4 +159,7 @@ function sendMP3Buffer(chatId, audioBuffer, options = {}) {
 }
 
 console.log('Finished initializing Telegram Bot!');
-
+config.adminChats.forEach(element => {
+    console.log("Sending bot start prompt to " + element);
+    sendTextMessage(element, "Bot started/restarted");
+});
