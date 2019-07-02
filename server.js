@@ -25,7 +25,7 @@ const gassistantConfig = {
         encodingOut: 'MP3', // supported are LINEAR16 / MP3 / OPUS_IN_OGG (defaults to LINEAR16)
         sampleRateOut: 24000, // supported are 16000 / 24000 (defaults to 24000)
       },
-      lang: 'en-US', // language code for input/output (defaults to en-US)
+      lang: 'en-SG', // language code for input/output (defaults to en-US)
       deviceModelId: 'default', // use if you've gone through the Device Registration process
       deviceId: 'default', // use if you've gone through the Device Registration process
       textQuery: 'Hello from the other side', // if this is set, audio input is ignored
@@ -134,6 +134,58 @@ bot.on('message', (msg) => {
     if (config.debug) console.log("Message Received: " + util.inspect(msg, {depth:null}));
 });
 
+/*console.log('Registering Inline Query');
+bot.on('inline_query', (msg) => {
+    if (config.debug) console.log("Inline Message Received: " + util.inspect(msg, {depth: null}));
+
+    // Check if empty
+    if (msg.query == null || msg.query == '') {
+        console.log("No Query Found");
+    } else {
+        console.log('[Google Assistant] Received inline from ' + msg.from.id + ': ' + msg.query);
+        if (config.debug) console.log('[DEBUG] Query Google');
+    
+        gassistantConfig.conversation.textQuery = msg.query;
+        //assistant.start(gassistantConfig.conversation);
+        assistant.start(gassistantConfig.conversation, (conversation) => {
+            // setup the conversation and send data to it
+            // for a full example, see `examples/mic-speaker.js`
+            
+            var voice = [];
+            
+            conversation
+                .on('audio-data', (data) => {
+                    if (data instanceof Buffer)
+                        voice.push(data);
+                })
+                .on('response', (text) => {
+                    // do stuff with the text that the assistant said back
+                    if (config.debug) console.log("Assistant Response: " + text);
+                    if (text == "") {
+                        console.log('[Google Assistant] No text response found');
+                        sendTextMessage(msg.from.id, "Please listen to audio output");
+                    } else {
+                        console.log('[Google Assistant] Sending answer to ' + msg.from.id);
+                        sendTextMessage(msg.from.id, text);
+                    }
+                })
+                .on('ended', (error, continueConversation) => {
+                    // once the conversation is ended, see if we need to follow up
+                    if (error) console.log('Conversation Ended Error:', error);
+                    else if (continueConversation) assistant.start();
+                    else console.log('Conversation Complete');
+                
+                    //console.log(voice);
+                    var outBuf = Buffer.concat(voice);
+                    console.log(outBuf);
+                    //fs.writeFileSync("out.mp3", outBuf);
+                    sendMP3Buffer(msg.from.id, outBuf);
+                })
+                .on('error', error => console.error(error));
+            });
+    }
+});*/
+
 console.log('Registering Polling Error Logs');
 bot.on('polling_error', (error) => {
     console.log(error);
@@ -150,7 +202,7 @@ function sendTextMessage(chatId, msg, options = {}) {
 
 function sendMP3Buffer(chatId, audioBuffer, options = {}) {
     let promise = bot.sendAudio(chatId, audioBuffer, options, {
-        filename: 'GassistantAudioOutput', contentType: 'audio/mpeg'
+        filename: 'GassistantAudioOutput.mp3', contentType: 'audio/mpeg'
     });
     promise.then((msg) => {
         if (config.debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
