@@ -37,6 +37,8 @@ const gassistantConfig = {
     },
   };
 
+if (config.debug) { console.log("[DEBUG] Auth Paths: "); console.log(gassistantConfig.auth); }
+
 const assistant = new GoogleAssistant(gassistantConfig.auth);
 
 const sendGAssist = (msg, match) => {
