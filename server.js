@@ -99,8 +99,16 @@ console.log('Authenticating with Telegram Servers...');
 // replace the value below with the Telegram token you receive from @BotFather
 const token = config.telegramBotToken;
 
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {polling: true});
+// Create a bot that uses 'polling' to fetch new updates 
+var bot;
+if (config.heroku) {
+  console.log("Heroku Bot detected, switching over to WebHook mode");
+  bot = new TelegramBot(token, {webHook: { port: config.port, host: config.host } });
+  bot.setWebHook(config.externalurl + "/" + token);
+} else {
+  console.log("Using Polling Mode for Telegram Bot");
+  bot = new TelegramBot(token, {polling: true}); // Poll mode
+}
 
 // Matches "/okgoogle [whatever]"
 // Matches "/okgoogle@ccn_gassistant_bot [whatever]"
