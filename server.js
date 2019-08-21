@@ -147,6 +147,16 @@ bot.onText(/\/debuginfo\b/, (msg, match) => {
     debugText += "Chat ID: " + msg.chat.id + "\n";
     debugText += "Chat Type: " + msg.chat.type + "\n";
     debugText += "Chat Info: " + groupinfo;
+
+    // Admin Debug Info
+    if (config.admins.indexOf(msg.from.id) !== -1) {
+        debugText += "\n\n***Additional Admin Debug Information***\n";
+        debugText += "Heroku Mode (Webhook): " + ((config.heroku) ? "true" : "false") + "\n";
+        debugText += "Debug Mode: " + ((config.debug) ? "true" : "false") + "\n";
+        debugText += "Port: " + config.port + "\n";
+        debugText += "Webhook Base URL: " + config.externalurl;
+    }
+
     sendTextMessage(msg.chat.id, "***Debug Information***\n" + debugText, {reply_to_message_id: msg.message_id, parse_mode: "Markdown"});
 });
 
