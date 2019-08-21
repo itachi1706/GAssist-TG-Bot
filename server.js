@@ -7,6 +7,7 @@ const homedir = require('homedir')
 const path = require('path');
 const GoogleAssistant = require('google-assistant');
 const fs = require('fs');
+const html2png = require('html2png');
 
 console.log('Initializing Telegram Bot...');
 
@@ -77,6 +78,16 @@ const sendGAssist = (msg, match) => {
                 console.log(outBuf);
                 //fs.writeFileSync("out.mp3", outBuf);
                 sendMP3Buffer(msg.chat.id, outBuf, {reply_to_message_id: msg.message_id});
+            })
+            .on('screen-data', (screen) => {
+                if (screen.format == 'HTML') {
+                    var ss = html2png({ width: 1280, height: 720, browser: 'phantomjs' });
+                    ss.render(screen.data, function (err, data) {
+                        var cb;
+                        if (!err) sendImageBuffer(msg.chat.id, img, {reply_to_message_id: msg.message_id});
+                        screenshot.close(cb);
+                    });
+                }
             })
             .on('error', error => console.error(error));
         });
@@ -200,12 +211,22 @@ function sendTextMessage(chatId, msg, options = {}) {
     return promise;
 }
 
+function sendImageBuffer(chatId, msg, options = {}) {
+    let promise = bot.sendPhoto(chatId, msg, options, {
+        filename: 'GassistantImage.png', contentType: 'image/png'
+    });
+    promise.then((msg) => {
+        if (config.debug) console.log("Sent Photo: " + util.inspect(msg, {depth:null}));
+    });
+    return promise;
+}
+
 function sendMP3Buffer(chatId, audioBuffer, options = {}) {
     let promise = bot.sendAudio(chatId, audioBuffer, options, {
         filename: 'GassistantAudioOutput.mp3', contentType: 'audio/mpeg'
     });
     promise.then((msg) => {
-        if (config.debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
+        if (config.debug) console.log("Sent Audio: " + util.inspect(msg, {depth:null}));
     });
     return promise;
 }
