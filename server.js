@@ -7,7 +7,7 @@ const homedir = require('homedir')
 const path = require('path');
 const GoogleAssistant = require('google-assistant');
 const fs = require('fs');
-const html2png = require('html2png');
+//const html2png = require('html2png');
 
 console.log('Initializing Telegram Bot...');
 
@@ -82,14 +82,14 @@ const sendGAssist = (msg, match) => {
                 sendMP3Buffer(msg.chat.id, outBuf, {reply_to_message_id: msg.message_id});
             })
             .on('screen-data', (screen) => {
-                if (screen.format == 'HTML') {
+                /*if (screen.format == 'HTML') {
                     var ss = html2png({ width: 1280, height: 720, browser: 'phantomjs' });
                     ss.render(screen.data, function (err, data) {
                         var cb;
                         if (!err) sendImageBuffer(msg.chat.id, img, {reply_to_message_id: msg.message_id});
                         screenshot.close(cb);
                     });
-                }
+                }*/
             })
             .on('error', error => console.error(error));
         });
