@@ -1,4 +1,4 @@
-# Undercover-TG_Bot
+# GAssistant-TG_Bot
 ---
 
 [![GitHub license](https://img.shields.io/github/license/itachi1706/CheesecakeUtilities.svg)](https://github.com/itachi1706/GAssist-TG-Bot/blob/master/LICENSE)
