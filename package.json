@@ -1,12 +1,12 @@
 {
   "name": "ccnet-gassistant-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Google Assistant Bot for Telegram. CCNet Internal Use",
   "main": "index.js",
   "dependencies": {
-    "google-assistant": "^0.5.4",
+    "google-assistant": "^0.6.2",
     "homedir": "^0.6.0",
-    "node-telegram-bot-api": "^0.30.0",
+    "node-telegram-bot-api": "^0.50.0",
     "path": "^0.12.7"
   },
   "devDependencies": {},
