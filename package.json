@@ -4,7 +4,7 @@
   "description": "Google Assistant Bot for Telegram. CCNet Internal Use",
   "main": "index.js",
   "dependencies": {
-    "google-assistant": "^0.6.2",
+    "google-assistant": "^0.6.4",
     "homedir": "^0.6.0",
     "node-telegram-bot-api": "^0.50.0",
     "path": "^0.12.7"
