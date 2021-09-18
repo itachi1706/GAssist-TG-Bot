@@ -65,3 +65,6 @@ credentials.json
 tgbottoken.txt
 restart.sh
 out.mp3
+
+env/
+.config/

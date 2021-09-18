@@ -16,7 +16,7 @@ console.log('Initializing the Google Assistant...');
 const gassistantConfig = {
     auth: {
       keyFilePath: path.resolve(__dirname, 'credentials.json'), // Credentials
-      savedTokensPath: path.resolve(`${homedir()}/.config/google-oauthlib-tool`, 'credentials.json'), // Device Credentials
+      savedTokensPath: path.resolve(__dirname, `.config/google-oauthlib-tool`, 'credentials.json'), // Device Credentials
     },
     // this param is optional, but all options will be shown
     conversation: {
