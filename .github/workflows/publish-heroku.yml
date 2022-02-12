@@ -1,0 +1,29 @@
+name: Publish to Heroku
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy variables down
+        run: |
+          echo $CONFIG > config.js
+          echo $CREDENTIALS_GOOGLE > credentials_google.json
+          echo $CREDENTIALS_JSON > credentials.json
+          echo $CREDENTIALS_SECURE_GOOGLE > credentials-secure_google.json
+        env:
+          CONFIG: ${{ secrets.CONFIG }}
+          CREDENTIALS_GOOGLE: ${{ secrets.CREDENTIALS_GOOGLE }}
+          CREDENTIALS_JSON: ${{ secrets.CREDENTIALS_JSON }}
+          CREDENTIALS_SECURE_GOOGLE: ${{ secrets.CREDENTIALS_SECURE_GOOGLE }}
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "ccnet-gassistant-bot" #Must be unique in Heroku
+          heroku_email: "kennethsohyq@gmail.com"
+          usedocker: true
