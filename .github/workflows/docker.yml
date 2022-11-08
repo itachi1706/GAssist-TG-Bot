@@ -36,5 +36,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3.2.0
         with:
+          context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: itachi1706/personal-docker-images:gassist-tg-bot
