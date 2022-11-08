@@ -11,6 +11,10 @@ jobs:
     name: Build and Push to DockerHub Private
     steps:
       - uses: actions/checkout@v3
+      - name: Remove values from .gitignore
+        run: |
+          sed -i "s/config.js//" .gitignore
+          sed -i "s/credentials.json//" .gitignore
       - name: Copy variables down
         run: |
           echo $CONFIG > config.js
