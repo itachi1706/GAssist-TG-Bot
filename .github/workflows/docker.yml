@@ -1,0 +1,34 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  buildpush:
+    runs-on: ubuntu-latest
+    name: Build and Push to DockerHub Private
+    steps:
+      - uses: actions/checkout@v3
+      - name: Copy variables down
+        run: |
+          echo $CONFIG > config.js
+          echo $CREDENTIALS_GOOGLE > credentials_google.json
+          echo $CREDENTIALS_JSON > credentials.json
+          echo $CREDENTIALS_SECURE_GOOGLE > credentials-secure_google.json
+        env:
+          CONFIG: ${{ secrets.CONFIG }}
+          CREDENTIALS_GOOGLE: ${{ secrets.CREDENTIALS_GOOGLE }}
+          CREDENTIALS_JSON: ${{ secrets.CREDENTIALS_JSON }}
+          CREDENTIALS_SECURE_GOOGLE: ${{ secrets.CREDENTIALS_SECURE_GOOGLE }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: itachi1706/personal-docker-images:gassist-tg-bot
