@@ -24,7 +24,7 @@ jobs:
           echo $CREDENTIALS_JSON > credentials.json
           echo $CREDENTIALS_SECURE_GOOGLE > credentials-secure_google.json
         env:
-          CONFIG: ${{ secrets.CONFIG }}
+          CONFIG: ${{ secrets.NON_HEROKU_CONFIG }}
           CREDENTIALS_GOOGLE: ${{ secrets.CREDENTIALS_GOOGLE }}
           CREDENTIALS_JSON: ${{ secrets.CREDENTIALS_JSON }}
           CREDENTIALS_SECURE_GOOGLE: ${{ secrets.CREDENTIALS_SECURE_GOOGLE }}
