@@ -6,7 +6,7 @@
   "dependencies": {
     "google-assistant": "^0.7.0",
     "homedir": "^0.6.0",
-    "node-telegram-bot-api": "^0.64.0",
+    "node-telegram-bot-api": "^0.65.1",
     "path": "^0.12.7"
   },
   "devDependencies": {},
