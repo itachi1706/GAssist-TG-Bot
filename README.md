@@ -6,7 +6,7 @@
 
 A Telegram bot for the Google Assistant
 
-This is a WIP and nothing is really set in stone yet lol
+This is a WIP and nothing is really set in stone yet lol 
 
 
 # How to setup
