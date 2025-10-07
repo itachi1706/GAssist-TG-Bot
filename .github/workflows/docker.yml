@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Push to DockerHub Private
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Remove values from .gitignore
         run: |
           cat .gitignore
