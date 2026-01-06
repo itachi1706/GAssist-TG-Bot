@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccnet-gassistant-bot-tg
+  labels:
+    app: ccnet-gassistant-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ccnet-gassistant-bot
+  template:
+    metadata:
+      labels:
+        app: ccnet-gassistant-bot
+    spec:
+      containers:
+        - name: ccnet-gassistant-bot
+          image: itachi1706/personal-docker-images:gassist-tg-bot
+          resources:
+            limits:
+              cpu: 10m
+              memory: 150Mi
+            requests:
+              cpu: 1m
+              memory: 50Mi
+          imagePullPolicy: Always
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: dockerhub-creds

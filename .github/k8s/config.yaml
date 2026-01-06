@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gassistant-config
+data:
+  config.js: >
+    module.exports.telegramBotToken =
+    '<path:kv/data/tg-bots/google-assistant#discordBotToken>';
+
+    module.exports.debug = false; 
+
+    module.exports.adminChats = ['<path:kv/data/tg-bots/google-assistant#admin-1-id>']; 
+
+    module.exports.admins = [<path:kv/data/tg-bots/google-assistant#admin-1-id>]; 
+
+    module.exports.port = process.env.PORT || 443; 
+
+    module.exports.host = '0.0.0.0'; 
