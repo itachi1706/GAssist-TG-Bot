@@ -4,6 +4,12 @@ metadata:
   name: ccnet-gassistant-bot-tg
   labels:
     app: ccnet-gassistant-bot
+    app.kubernetes.io/name: "google-assistant-telegram-bot"
+    app.kubernetes.io/instance: "google-assistant-telegram-bot-live"
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/component: "server"
+    app.kubernetes.io/part-of: "google-assistant-telegram-bot"
+    app.kubernetes.io/managed-by: "argo"
 spec:
   replicas: 1
   selector:
