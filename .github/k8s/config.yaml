@@ -5,7 +5,7 @@ metadata:
 data:
   config.js: >
     module.exports.telegramBotToken =
-    '<path:kv/data/tg-bots/google-assistant#discordBotToken>';
+    '<path:kv/data/tg-bots/google-assistant#botToken>';
 
     module.exports.debug = false; 
 
